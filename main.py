@@ -10,7 +10,7 @@ def blackjack(): # Långt ifrån klar :´(
 
 def roulette(): # Har påbörjat, man kan endast välja hur mycket man bettar.
 	print("Welcome to the Roulette table.")
-	print(f"Your balance is {balance}$."+"\n")
+	show_balance()
 	while True:
 		bet = input("How much do you want to bet? ").strip()
 		if bet.isdigit(): # .isdigit() returnerar True/False
@@ -27,38 +27,39 @@ def roulette(): # Har påbörjat, man kan endast välja hur mycket man bettar.
 	print("Roulette is not available yet.")
 	pass
 
+def show_balance():
+    print(f"Your balance is {balance}$."+"\n")
+
 def show_menu(): # Reminder till vemsomhelst, ta bort TBA sen.
-	print("\n=== Welcome to the Casino™ ===")
+	print("=== Welcome to the Casino™ ===")
 	print("1. Blackjack !(TBA)!")
 	print("2. Roulette  !(TBA)!")
 	print("3. Show balance")
 	print("4. Quit")
 
+def quit_game():
+    print("Thank you for playing. Goodbye!")
+    time.sleep(2)
+    return False  
+
+menuOptions = { # Dictionary replacing an if/elif/else block.
+	"1": blackjack,
+	"2": roulette,
+	"3": show_balance,
+	"4": quit_game,
+}
+
 print(f"You start with {balance}$ in your balance.")
 while True:
-	show_menu()
-	choice = input("Choose an option(1–4): ").strip()
+    show_menu()
+    choice = input(f"Choose an option (1–{len(menuOptions)}): ").strip()
 
-	if choice == "1": # Inte påbörjad
-		os.system("clear")
-		blackjack()
-		time.sleep(2)
-
-	elif choice == "2": # Inte påbörjad
-		os.system("clear")
-		roulette()
-		time.sleep(2)
-
-	elif choice == "3": # Klar, om man inte kan göra ngt mer med detta?
-		os.system("clear")
-		print(f"Your balance is {balance}$.")
-		time.sleep(2)
-
-	elif choice == "4": # Klar. Finns det ens något man kan lägga till här?
-		os.system("clear")
-		print("Thank you for playing. Goodbye!")
-		time.sleep(2)
-		break
-
-	else:
-		print("Invalid input. Please use a number between 1 and 4.")
+    action = menuOptions.get(choice) # Accesses the function corresponding to each number
+    if action is None:
+        print(f"Invalid input. Please use a number between 1 and {len(menuOptions)}.")
+        continue
+	
+    os.system("clear")
+    if action() is False:
+        break
+    time.sleep(2)
