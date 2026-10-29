@@ -24,7 +24,25 @@ def hand_value(hand):
 def deal_card(deck):
 	return deck.pop()
 
-def blackjack(balance): # Långt ifrån klar :´( men man kan betta!
+def dealer_play(deck, dealer_hand, player_hand, balance, bet):
+	while hand_value(dealer_hand) < 17:
+		dealer_hand.append(deal_card(deck))
+	print(f"Dealer's hand: {dealer_hand} (Value: {hand_value(dealer_hand)})")
+	if hand_value(dealer_hand) > 21:
+		print("Dealer busts! You win.")
+		balance += bet
+	elif hand_value(player_hand) > hand_value(dealer_hand):
+		print("You win!")
+		balance += bet
+	elif hand_value(player_hand) < hand_value(dealer_hand):
+		print("Dealer wins.")
+		balance -= bet
+	else:
+		print("It's a tie!")
+	return balance
+	
+
+def blackjack(balance): # inte jättelångt från klar, men man kan betta!
 	print("Welcome to the Blackjack table.")
 	print(f"Your balance is ${balance}."+"\n")
 	while True:
@@ -52,36 +70,60 @@ def blackjack(balance): # Långt ifrån klar :´( men man kan betta!
 	player_hand = [deal_card(deck), deal_card(deck)]
 	dealer_hand = [deal_card(deck), deal_card(deck)]
 
+	if hand_value(player_hand) == 21:
+		print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
+		print(f"Dealer's hand: {dealer_hand} (Value: {hand_value(dealer_hand)})")
+		if hand_value(dealer_hand) == 21:
+			print("It's a tie! Both you and the dealer have Blackjack.")
+		else:
+			print("Blackjack! You win!")
+			balance += int(bet * 1.5)
+		return balance
+
 	print (f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
 	print (f"Dealer's hand: {dealer_hand[0]} and [hidden]")
-	move = input("Do you want to hit or stand? (h/s): ").strip().lower()
-	while move == 'h':
-		player_hand.append(deal_card(deck))
-		print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
-		if hand_value(player_hand) > 21:
-			print("You bust! Dealer wins.")
-			balance -= bet
-			return balance
-		move = input("Do you want to hit or stand? (h/s): ").strip().lower()
-	if move == 's':
-		while hand_value(dealer_hand) < 17:
-			dealer_hand.append(deal_card(deck))
-		print(f"Dealer's hand: {dealer_hand} (Value: {hand_value(dealer_hand)})")
-		if hand_value(dealer_hand) > 21:
-			print("Dealer busts! You win.")
-			balance += bet
-		elif hand_value(player_hand) > hand_value(dealer_hand):
-			print("You win!")
-			balance += bet
-		elif hand_value(player_hand) < hand_value(dealer_hand):
-			print("Dealer wins.")
-			balance -= bet
+	move = input("Do you want to hit, stand or double down? (h/s/d): ").strip().lower()
+	i = 0
+	while True:
+		if move == 'h':
+			i += 1
+			player_hand.append(deal_card(deck))
+			print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
+			if hand_value(player_hand) > 21:
+				print("You bust! Dealer wins.")
+				balance -= bet
+				return balance
+			move = input("Do you want to hit or stand? (h/s): ").strip().lower()
+		elif move == 's':
+			balance = dealer_play(deck, dealer_hand, player_hand, balance, bet)
+			break
+		elif move == 'd':
+			bet_original = bet
+			bet = bet * 2
+			if bet > balance:
+				bet = bet_original
+				print("Insufficient balance to double down. You can only hit or stand.")
+				move = input("Do you want to hit or stand? (h/s): ").strip().lower()
+			else:
+				print(f"You have doubled down. Your new bet is ${bet}.")
+				player_hand.append(deal_card(deck))
+				print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
+				if hand_value(player_hand) > 21:
+					print("You bust! Dealer wins.")
+					balance -= bet
+					return balance
+				balance = dealer_play(deck, dealer_hand, player_hand, balance, bet)
+				break
 		else:
-			print("It's a tie!")
+			if i == 0:
+				print("Invalid input. Please enter 'h' to hit, 's' to stand, or 'd' to double down.")
+				move = input("Do you want to hit, stand or double down? (h/s/d): ").strip().lower()
+			else:
+				print("Invalid input. Please enter 'h' to hit or 's' to stand.")
+				move = input("Do you want to hit or stand? (h/s): ").strip().lower()
 
-	pass
 	return balance
-
+			
 def roulette(): # Har påbörjat, man kan endast välja hur mycket man bettar.
 	print("Welcome to the Roulette table.")
 	print(f"Your balance is ${balance}."+"\n")
@@ -115,7 +157,7 @@ while True:
 
 	if choice == "1": # Inte påbörjad
 		os.system("clear")
-		blackjack(balance)
+		balance = blackjack(balance)
 		time.sleep(2)
 
 	elif choice == "2": # Inte påbörjad
