@@ -71,16 +71,16 @@ def blackjack(balance): # Main function for the blackjack game
 		ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 		suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
 		deck = []
-		for suit in suits:
+		for suit in suits: # Creates all card combinations and adds them to the deck
 			for rank in ranks:
 				card = f"{rank} of {suit}"
 				deck.append(card)
 
-		random.shuffle(deck)
+		random.shuffle(deck) 
 		player_hand = [deal_card(deck), deal_card(deck)]
 		dealer_hand = [deal_card(deck), deal_card(deck)]
 
-		if hand_value(player_hand) == 21:
+		if hand_value(player_hand) == 21: # Checks for blackjack on the first hand
 			print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
 			print(f"Dealer's hand: {dealer_hand} (Value: {hand_value(dealer_hand)})")
 			if hand_value(dealer_hand) == 21:
@@ -88,13 +88,13 @@ def blackjack(balance): # Main function for the blackjack game
 			else:
 				print("Blackjack! You win!")
 				balance += int(bet * 1.5)
-		else:
+		else: 
 			print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
 			print(f"Dealer's hand: {dealer_hand[0]} and [hidden]")
 			move = input("Do you want to hit, stand or double down? (h/s/d): ").strip().lower()
-			i = 0
+			i = 0 # Counter to track if the player has already made a move to restrict double down
 			while True:
-				if move == 'h':
+				if move == 'h': # Adds a card to players hand and checks for a bust.
 					i += 1
 					player_hand.append(deal_card(deck))
 					print(f"Your hand: {player_hand} (Value: {hand_value(player_hand)})")
@@ -103,10 +103,10 @@ def blackjack(balance): # Main function for the blackjack game
 						balance -= bet
 						break
 					move = input("Do you want to hit or stand? (h/s): ").strip().lower()
-				elif move == 's':
+				elif move == 's': # Gives the turn to the dealer and runs the dealer_play function.
 					balance = dealer_play(deck, dealer_hand, player_hand, balance, bet)
 					break
-				elif move == 'd':
+				elif move == 'd': # Doubles the players bet and gives them 1 more card, then gives the turn to the dealer
 					bet_original = bet
 					bet *= 2
 					if bet > balance:
@@ -168,7 +168,7 @@ def roulette(): # Main function for the roulette game
             else:
                 print("Invalid input.")
 
-        while True:  # Spelaren får välja vad de vill satsa på, nummer eller färg.
+        while True:  # The player gets to bet on a color or a number.
             guess_text = input(
                 "Pick a number from 0 to 36 or a color (Red/Black/Green) to bet on: ").strip().lower()
             if guess_text.isdigit() and 0 <= int(guess_text) <= 36:
@@ -180,11 +180,11 @@ def roulette(): # Main function for the roulette game
             else:
                 print("Please enter a whole number from 0 to 36 or Red/Black/Green.")
 
-        result = random.randint(0, 36)
+        result = random.randint(0, 36) # Rolls the winning number
         balance -= bet
         result_color = None
 
-        for color, numbers in roulette_numbers.items():
+        for color, numbers in roulette_numbers.items(): # Checks the winning numbers corresponding color.
             if result in numbers:
                 result_color = color
                 break
@@ -196,11 +196,11 @@ def roulette(): # Main function for the roulette game
 
         print(f"\n The spin landed on {result} ({result_color}).")
 
-        if guess == result or (guess == "green" and result_color == "green"):
-            balance += bet * 36
+        if guess == result or (guess == "green" and result_color == "green"): # Checks the bet against the result.
+            balance += bet * 36 # 35:1 times profit for number or green
             print(f"You won {bet * 35}$ profit!")
         elif guess == result_color:
-            balance += bet * 2
+            balance += bet * 2 # 2:1 times profit for color
             print(f"You won {bet}$ profit!")
         else:
             print("Better luck next time.")
@@ -241,8 +241,9 @@ def slot_machine(): # Main function for the slot machine game
 				print("Invalid input.")
 
 		balance -= bet
-		reels = [random.choice(slot_machine_symbols) for symbol in range(3)]
-		for reel in reels:
+		reels = [random.choice(slot_machine_symbols) for symbol in range(3)] # Picks 3 random symbols
+
+		for reel in reels: # Text-based graphics for dramatic effect
 			spins = random.randint(5, 9)
 			for _ in range(spins):
 						print("Spinning...")
@@ -253,10 +254,10 @@ def slot_machine(): # Main function for the slot machine game
 		print(f"{' | '.join(reels)}")
 
 		if reels[0] == reels[1] == reels[2]:
-			balance += bet * 10
-			print(f"Jackpot! You won {bet*9}$!")
+			balance += bet * 11 # 10:1 times profit for jackpot
+			print(f"Jackpot! You won {bet*10}$!")
 		elif reels[0] == reels[1] or reels[1] == reels[2] or reels[0] == reels[2]:
-			balance += bet * 2
+			balance += bet * 2 # 2:1 times profit for pair
 			print(f"Pair, You won {bet}$!")
 		else:
 			print("No match, Better luck next time.")
