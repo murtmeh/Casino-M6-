@@ -2,17 +2,19 @@ import random
 import os
 import time
 
-balance = 1000
+balance = 1000 # Starting balance
 
-roulette_numbers = {
+roulette_numbers = { # Game values for roulette
     "red": {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36},
     "black": {2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35},
     "green": {0}
 }
 
-slot_machine_symbols = ["Cherry", "Lemon", "Orange", "Plum", "Bell", "Crown", "Seven"]
+slot_machine_symbols = [ # Game values for the slot machine
+	"Cherry", "Lemon", "Orange", "Plum", "Bell", "Crown", "Seven" 
+	]
 
-def card_value(card):
+def card_value(card): # Calculates value of a card in blackjack
 	rank = card.split(" of")[0]
 	if rank in ['J', 'Q', 'K']:
 		return 10
@@ -21,7 +23,7 @@ def card_value(card):
 	else:
 		return int(rank)
 
-def hand_value(hand):
+def hand_value(hand): # Calculates the total value of a hand in blackjack, accounting for aces
 	value = sum(card_value(card) for card in hand)
 	aces = sum(1 for card in hand if card.startswith('A'))
 	while value > 21 and aces:
@@ -29,10 +31,10 @@ def hand_value(hand):
 		aces -= 1
 	return value
 
-def deal_card(deck):
+def deal_card(deck): # Deals the "top" card from the deck
 	return deck.pop()
 
-def dealer_play(deck, dealer_hand, player_hand, balance, bet):
+def dealer_play(deck, dealer_hand, player_hand, balance, bet): # Dealers turn in blackjack
 	while hand_value(dealer_hand) < 17:
 		dealer_hand.append(deal_card(deck))
 	print(f"Dealer's hand: {dealer_hand} (Value: {hand_value(dealer_hand)})")
@@ -49,8 +51,7 @@ def dealer_play(deck, dealer_hand, player_hand, balance, bet):
 		print("It's a tie!")
 	return balance
 	
-
-def blackjack(balance):
+def blackjack(balance): # Main function for the blackjack game
 	print("Welcome to the Blackjack table.")
 	while balance > 0:
 		print(f"Your balance is ${balance}."+"\n")
@@ -144,7 +145,7 @@ def blackjack(balance):
 
 	return balance
 
-def roulette(): 
+def roulette(): # Main function for the roulette game
     global balance
     print("Welcome to the Roulette table.")
 
@@ -217,7 +218,7 @@ def roulette():
                 return
             print("Please enter yes(y) or no(n).")
 
-def slot_machine():
+def slot_machine(): # Main function for the slot machine game
 	global balance
 	print("Welcome to the Slot Machine!")
 	while True:
@@ -276,8 +277,7 @@ def slot_machine():
 def show_balance():
     print(f"Your balance is {balance}$.\n")
 
-
-def show_menu():  # Reminder till vemsomhelst, ta bort TBA sen.
+def show_menu():
     print("=== Welcome to the Casino™ ===")
     print("1. Blackjack")
     print("2. Roulette")
@@ -285,12 +285,10 @@ def show_menu():  # Reminder till vemsomhelst, ta bort TBA sen.
     print("4. Show balance")
     print("5. Quit")
 
-
 def quit_game():
     print("Thank you for playing. Goodbye!")
     time.sleep(2)
     return False
-
 
 menuOptions = {  # Dictionary replacing the menu if/elif/else block.
     "1": blackjack,
@@ -301,7 +299,7 @@ menuOptions = {  # Dictionary replacing the menu if/elif/else block.
 }
 
 print(f"You start with {balance}$ in your balance.")
-if __name__ == "__main__":
+if __name__ == "__main__": # Main game loop
 	while True:
 		show_menu()
 		choice = input("Choose an option(1–5): ").strip()
