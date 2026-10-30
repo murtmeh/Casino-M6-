@@ -62,12 +62,11 @@ def roulette():  # Kanske klar ?!
                 break
             
         spins = random.randint(3, 6)
-        print(spins)
         for _ in range(spins):
             print("Spinning...")
-            time.sleep(0.5)
+            time.sleep(1)
 
-        print(f"\n The ball landed on {result} ({result_color}).")
+        print(f"\n The spin landed on {result} ({result_color}).")
 
         if guess == result or (guess == "green" and result_color == "green"):
             balance += bet * 36
@@ -89,7 +88,7 @@ def roulette():  # Kanske klar ?!
                 break
             if play_again in ("n", "no"):
                 return
-            print("Please enter y or n.")
+            print("Please enter yes(y) or no(n).")
 
 
 def show_balance():
